@@ -578,7 +578,7 @@ class DataProvider():
                                 transform=None, augmentation=False, nr_events_window=nr_events_window,
                                 events_representation=events_representation)
         elif dataset == "eventSym":
-            test_set = NCaltech(repeat_augmentations=None, root="./data/N-Caltech12/testing",
+            test_set = EventSym(repeat_augmentations=None, root="./data/EventSym/testing",
                                 transform=None, augmentation=False, nr_events_window=nr_events_window,
                                 events_representation=events_representation)
         elif dataset == "ncaltech12":
