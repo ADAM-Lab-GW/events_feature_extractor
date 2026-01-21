@@ -111,70 +111,70 @@ def plot_voxel_grid(voxel_grid, filename):
         img.save("./images/" + filename.split('/')[-2] + "_bin" + str(i) + '.jpg')
 
 
-events = np.load("./data/N-Caltech256/training/harp/098_0073.npy").astype(np.float32)
-plot_3d_events(events, "harp")
+events = np.load("data/eventsym/training/hazard_labels/Electricity sign/1_events.npy").astype(np.float32)
+plot_3d_events(events, "electricity_sign_1")
 
-events = np.load("./data/N-Caltech256/training/tennis-shoes/255_0012.npy").astype(np.float32)
-plot_3d_events(events, id="tennis-shoes")
+events = np.load("data/eventsym/training/traffic_signs/Pedestrian sign/1_events.npy").astype(np.float32)
+plot_3d_events(events, id="pedestrian_sign_1")
 
-# ----------------------------------------
+# # ----------------------------------------
 
-filename = "./data/N-Caltech256/training/tomato/221_0024.npy"
-events = np.load(filename).astype(np.float32)
-histogram = generate_event_histogram(events, (180, 240))
-plot_histogram(histogram, filename, "_white_background")
+# filename = "./data/N-Caltech256/training/tomato/221_0024.npy"
+# events = np.load(filename).astype(np.float32)
+# histogram = generate_event_histogram(events, (180, 240))
+# plot_histogram(histogram, filename, "_white_background")
 
-filename = "./data/N-Caltech256/training/tomato/221_0005.npy"
-events = np.load(filename).astype(np.float32)
-histogram = generate_event_histogram(events, (180, 240))
-plot_histogram(histogram, filename, "_complex_background")
+# filename = "./data/N-Caltech256/training/tomato/221_0005.npy"
+# events = np.load(filename).astype(np.float32)
+# histogram = generate_event_histogram(events, (180, 240))
+# plot_histogram(histogram, filename, "_complex_background")
 
-filename = "./data/N-Caltech256/training/light-house/132_0050.npy"
-events = np.load(filename).astype(np.float32)
-histogram = generate_event_histogram(events, (180, 240))
+# filename = "./data/N-Caltech256/training/light-house/132_0050.npy"
+# events = np.load(filename).astype(np.float32)
+# histogram = generate_event_histogram(events, (180, 240))
 
-side = (180, 240)
-rnd_rot = transforms.RandomRotation(10., interpolation=transforms.InterpolationMode.BILINEAR)
-rnd_hflip = transforms.RandomHorizontalFlip(p=1)
-rnd_erase = transforms.RandomErasing(p=1, scale=(0.02, 0.1))
-rnd_blur = transforms.GaussianBlur((int(side[1] * .1) if int(side[1] * .1) % 2 != 0 else int(side[1] * .1) + 1),
-                                   sigma=(1., 1.4))
-rnd_resizedcrop = transforms.RandomResizedCrop(size=side, scale=(0.6, 0.7),
-                                               ratio=(0.75, 1.3333333333333333),
-                                               interpolation=transforms.InterpolationMode.BILINEAR)
-transform = transforms.Compose([rnd_resizedcrop, rnd_hflip, rnd_blur, rnd_rot, rnd_erase])
+# side = (180, 240)
+# rnd_rot = transforms.RandomRotation(10., interpolation=transforms.InterpolationMode.BILINEAR)
+# rnd_hflip = transforms.RandomHorizontalFlip(p=1)
+# rnd_erase = transforms.RandomErasing(p=1, scale=(0.02, 0.1))
+# rnd_blur = transforms.GaussianBlur((int(side[1] * .1) if int(side[1] * .1) % 2 != 0 else int(side[1] * .1) + 1),
+#                                    sigma=(1., 1.4))
+# rnd_resizedcrop = transforms.RandomResizedCrop(size=side, scale=(0.6, 0.7),
+#                                                ratio=(0.75, 1.3333333333333333),
+#                                                interpolation=transforms.InterpolationMode.BILINEAR)
+# transform = transforms.Compose([rnd_resizedcrop, rnd_hflip, rnd_blur, rnd_rot, rnd_erase])
 
-plot_histogram(histogram, filename, "original")
-for i, tr in enumerate(transform.transforms):
-    histogram_swaped_axis = np.moveaxis(histogram.copy(), -1, 0)
-    histogram_transformed = tr(torch.from_numpy(histogram_swaped_axis)).numpy()
-    histogram_transformed = np.moveaxis(histogram_transformed, 0, -1)
-    plot_histogram(histogram_transformed, filename, str(i))
-plot_histogram(random_swap_channels(histogram, p=1), filename, "swap")
-plot_histogram(random_change_brightness(histogram, p=1), filename, "change_brightness")
+# plot_histogram(histogram, filename, "original")
+# for i, tr in enumerate(transform.transforms):
+#     histogram_swaped_axis = np.moveaxis(histogram.copy(), -1, 0)
+#     histogram_transformed = tr(torch.from_numpy(histogram_swaped_axis)).numpy()
+#     histogram_transformed = np.moveaxis(histogram_transformed, 0, -1)
+#     plot_histogram(histogram_transformed, filename, str(i))
+# plot_histogram(random_swap_channels(histogram, p=1), filename, "swap")
+# plot_histogram(random_change_brightness(histogram, p=1), filename, "change_brightness")
 
-# ----------------------------------------
+# # ----------------------------------------
 
-filename = "./data/N-Caltech256/training/tennis-shoes/255_0012.npy"
-events = np.load(filename).astype(np.float32)
-histogram = generate_event_histogram(events, (180, 240))
-plot_histogram(histogram, filename, "")
+# filename = "./data/N-Caltech256/training/tennis-shoes/255_0012.npy"
+# events = np.load(filename).astype(np.float32)
+# histogram = generate_event_histogram(events, (180, 240))
+# plot_histogram(histogram, filename, "")
 
-for i, tr in enumerate(transform.transforms):
-    histogram_swaped_axis = np.moveaxis(histogram.copy(), -1, 0)
-    histogram_transformed = tr(torch.from_numpy(histogram_swaped_axis)).numpy()
-    histogram_transformed = np.moveaxis(histogram_transformed, 0, -1)
-    plot_histogram(histogram_transformed, filename, str(i))
+# for i, tr in enumerate(transform.transforms):
+#     histogram_swaped_axis = np.moveaxis(histogram.copy(), -1, 0)
+#     histogram_transformed = tr(torch.from_numpy(histogram_swaped_axis)).numpy()
+#     histogram_transformed = np.moveaxis(histogram_transformed, 0, -1)
+#     plot_histogram(histogram_transformed, filename, str(i))
 
-# --------------------------------------------
+# # --------------------------------------------
 
-filename = "./data/N-Caltech256/training/owl/152_0030.npy"
-events = np.load(filename).astype(np.float32)
-voxel_grid = events_to_voxel_grid(events, 10, 240, 180)
-plot_voxel_grid(voxel_grid, filename)
+# filename = "./data/N-Caltech256/training/owl/152_0030.npy"
+# events = np.load(filename).astype(np.float32)
+# voxel_grid = events_to_voxel_grid(events, 10, 240, 180)
+# plot_voxel_grid(voxel_grid, filename)
 
 
-# --------------------------------------------
+# # --------------------------------------------
 
 
 def plot_loss(filename1, line_name1,
@@ -201,19 +201,19 @@ def plot_loss(filename1, line_name1,
     plt.close()
 
 
-plot_loss(
-    filename1="./checkpoint/standard/ncaltech101/plstm/setup1/ncaltech101/log_standard_ncaltech101_plstm_seed_10_batch_30.cvs",
-    line_name1="1\%",
-    filename2="./checkpoint/standard/ncaltech101/plstm/setup2/ncaltech101/log_standard_ncaltech101_plstm_seed_10_batch_30.cvs",
-    line_name2="5\%",
-    hue_name="Pct. of events",
-    x_label="Epoch",
-    y_label="Loss score",
-    title="Phased LSTM: N-Caltech101"
-)
+# plot_loss(
+#     filename1="./checkpoint/standard/ncaltech101/plstm/setup1/ncaltech101/log_standard_ncaltech101_plstm_seed_10_batch_30.cvs",
+#     line_name1="1\%",
+#     filename2="./checkpoint/standard/ncaltech101/plstm/setup2/ncaltech101/log_standard_ncaltech101_plstm_seed_10_batch_30.cvs",
+#     line_name2="5\%",
+#     hue_name="Pct. of events",
+#     x_label="Epoch",
+#     y_label="Loss score",
+#     title="Phased LSTM: N-Caltech101"
+# )
 
 
-# --------------------------------------------
+# # --------------------------------------------
 
 def plot_accuracy():
     # PLSTM
@@ -233,75 +233,75 @@ def plot_accuracy():
     plt.close()
 
 
-plot_accuracy()
+# plot_accuracy()
 
-# --------------------------------------------
-data = np.load("./data/ncaltech12_ssl_features_test_data_histogram.npy")
-tsne = manifold.TSNE(n_components=2, init='pca', random_state=0)
-data_tsne = tsne.fit_transform(data)
-sns.set(font_scale=.5)
-g = sns.scatterplot(
-    x=data_tsne[:, 0],
-    y=data_tsne[:, 1],
-    hue=data[:, -1],
-    palette=sns.color_palette("bright", len(np.unique(data[:, -1]))),
-    legend=False,
-    style=data[:, -1],
-    alpha=0.5
-)
+# # --------------------------------------------
+# data = np.load("./data/ncaltech12_ssl_features_test_data_histogram.npy")
+# tsne = manifold.TSNE(n_components=2, init='pca', random_state=0)
+# data_tsne = tsne.fit_transform(data)
+# sns.set(font_scale=.5)
+# g = sns.scatterplot(
+#     x=data_tsne[:, 0],
+#     y=data_tsne[:, 1],
+#     hue=data[:, -1],
+#     palette=sns.color_palette("bright", len(np.unique(data[:, -1]))),
+#     legend=False,
+#     style=data[:, -1],
+#     alpha=0.5
+# )
 
-# return the figure
-g.figure.savefig(
-    "./images/ncaltech12_ssl_features_test_data_histogram_tsne_classes-{}.pdf".format(len(np.unique(data[:, -1]))),
-    format="pdf",
-    bbox_inches="tight")
-plt.close()
+# # return the figure
+# g.figure.savefig(
+#     "./images/ncaltech12_ssl_features_test_data_histogram_tsne_classes-{}.pdf".format(len(np.unique(data[:, -1]))),
+#     format="pdf",
+#     bbox_inches="tight")
+# plt.close()
 
-data = np.load("./data/ncaltech12_ssl_features_test_data_voxel.npy")
-tsne = manifold.TSNE(n_components=2, init='pca', random_state=0)
-data_tsne = tsne.fit_transform(data)
-sns.set(font_scale=.5)
-g = sns.scatterplot(
-    x=data_tsne[:, 0],
-    y=data_tsne[:, 1],
-    hue=data[:, -1],
-    palette=sns.color_palette("bright", len(np.unique(data[:, -1]))),
-    legend=False,
-    style=data[:, -1],
-    alpha=0.5
-)
+# data = np.load("./data/ncaltech12_ssl_features_test_data_voxel.npy")
+# tsne = manifold.TSNE(n_components=2, init='pca', random_state=0)
+# data_tsne = tsne.fit_transform(data)
+# sns.set(font_scale=.5)
+# g = sns.scatterplot(
+#     x=data_tsne[:, 0],
+#     y=data_tsne[:, 1],
+#     hue=data[:, -1],
+#     palette=sns.color_palette("bright", len(np.unique(data[:, -1]))),
+#     legend=False,
+#     style=data[:, -1],
+#     alpha=0.5
+# )
 
-g.figure.savefig(
-    "./images/ncaltech12_ssl_features_test_data_voxel_tsne_classes-{}.pdf".format(len(np.unique(data[:, -1]))),
-    format="pdf",
-    bbox_inches="tight")
-plt.close()
+# g.figure.savefig(
+#     "./images/ncaltech12_ssl_features_test_data_voxel_tsne_classes-{}.pdf".format(len(np.unique(data[:, -1]))),
+#     format="pdf",
+#     bbox_inches="tight")
+# plt.close()
 
-# --------------------------------------------
+# # --------------------------------------------
 
-histogram = pd.read_csv("./checkpoint/simclr/ncaltech12/Histogram/log_simclr_ncaltech12_scnn_seed_10_batch_64.cvs")
-histogram.rename(columns={"loss": "histogram"}, inplace=True)
-histogram.drop(['score'], axis=1, inplace=True)
+# histogram = pd.read_csv("./checkpoint/simclr/ncaltech12/Histogram/log_simclr_ncaltech12_scnn_seed_10_batch_64.cvs")
+# histogram.rename(columns={"loss": "histogram"}, inplace=True)
+# histogram.drop(['score'], axis=1, inplace=True)
 
-voxel = pd.read_csv("./checkpoint/simclr/ncaltech12/Voxel/log_simclr_ncaltech12_scnn_seed_10_batch_64.cvs")
-voxel.rename(columns={"loss": "voxel grid"}, inplace=True)
-voxel.drop(['score'], axis=1, inplace=True)
+# voxel = pd.read_csv("./checkpoint/simclr/ncaltech12/Voxel/log_simclr_ncaltech12_scnn_seed_10_batch_64.cvs")
+# voxel.rename(columns={"loss": "voxel grid"}, inplace=True)
+# voxel.drop(['score'], axis=1, inplace=True)
 
-df = histogram.merge(voxel)
-df = df.melt('epoch', value_vars=['histogram', 'voxel grid'], value_name='Loss')
-df["epoch"] = df["epoch"] + 1
-df.rename(columns={"variable": "Event representation", "epoch": "Epoch"}, inplace=True)
-sns.set(font_scale=1.2)
-g = sns.lineplot(x="Epoch", y="Loss", hue='Event representation', data=df,
-                 style='Event representation')
-x_indices = [i * 50 for i in range(1, 9)]
-x_indices.insert(0, 1)
-g.set(xticks=x_indices)
-g.set_title("Self-supervised training on N-Caltech256-12")
-g.figure.savefig("./images/ncaltech12_ssl_train_loss.pdf",
-                 format="pdf",
-                 bbox_inches="tight")
-plt.close()
+# df = histogram.merge(voxel)
+# df = df.melt('epoch', value_vars=['histogram', 'voxel grid'], value_name='Loss')
+# df["epoch"] = df["epoch"] + 1
+# df.rename(columns={"variable": "Event representation", "epoch": "Epoch"}, inplace=True)
+# sns.set(font_scale=1.2)
+# g = sns.lineplot(x="Epoch", y="Loss", hue='Event representation', data=df,
+#                  style='Event representation')
+# x_indices = [i * 50 for i in range(1, 9)]
+# x_indices.insert(0, 1)
+# g.set(xticks=x_indices)
+# g.set_title("Self-supervised training on N-Caltech256-12")
+# g.figure.savefig("./images/ncaltech12_ssl_train_loss.pdf",
+#                  format="pdf",
+#                  bbox_inches="tight")
+# plt.close()
 
 
 def dense_to_sparse(dense_tensor):
@@ -363,16 +363,16 @@ def apply_submanifold_conv(input_, filename, submanifold_output):
     return d_
 
 
-input_shape = (128, 128)
-i = create_input(input_shape)
-out = apply_dense_conv(i.view(1, 1, i.shape[0], i.shape[1]), "./images/conv1.jpg")
-for k in range(2, 20):
-    out = apply_dense_conv(out, "./images/conv{}.jpg".format(k))
+# input_shape = (128, 128)
+# i = create_input(input_shape)
+# out = apply_dense_conv(i.view(1, 1, i.shape[0], i.shape[1]), "./images/conv1.jpg")
+# for k in range(2, 20):
+#     out = apply_dense_conv(out, "./images/conv{}.jpg".format(k))
 
-x = input_shape[0] - 2
-y = input_shape[1] - 2
-out = apply_submanifold_conv(i.view(i.shape[0], i.shape[1], 1), "./images/sconv1.jpg", [x, y])
-for k in range(2, 20):
-    x -= 2
-    y -= 2
-    out = apply_submanifold_conv(out.view(out.shape[0], out.shape[1], 1), "./images/sconv{}.jpg".format(k), [x, y])
+# x = input_shape[0] - 2
+# y = input_shape[1] - 2
+# out = apply_submanifold_conv(i.view(i.shape[0], i.shape[1], 1), "./images/sconv1.jpg", [x, y])
+# for k in range(2, 20):
+#     x -= 2
+#     y -= 2
+#     out = apply_submanifold_conv(out.view(out.shape[0], out.shape[1], 1), "./images/sconv{}.jpg".format(k), [x, y])
