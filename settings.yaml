@@ -15,7 +15,7 @@ method:
   batch_size: 256  # the number of samples per iteration
 checkpoint:
   epoch_start: 0
-  file: '/home/adamlab/repos/events_feature_extractor/checkpoint/simclr/eventSym/simclr_trial0_eventSym_scnn_seed_10_batch_256_epoch_100/archive/data.pkl'
+  file: '/home/adamlab/repos/events_feature_extractor/checkpoint/simclr/eventSym/simclr_trial0_eventSym_scnn_seed_10_batch_256_epoch_100.tar'
   id: 'trial0'  # An additional identifier that is appended to the name of a checkpoint file
 hardware:
   num_workers: 0  # The number used to load data
