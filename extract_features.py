@@ -87,29 +87,58 @@ def write_features(extracted, labels_, out_folder):
 
 def extract(feature_extractor, data_loader):
     feature_extractor.eval()
-    extracted = None
-    labels_ = None
+
+    extracted = []
+    labels_ = []
+
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
     with torch.no_grad():
         for i_batch, data in enumerate(data_loader):
             samples, _, target = data
-            if torch.cuda.is_available():
-                samples, target = samples.cuda(), target.cuda()
 
-            locations, features = Classifier.denseToSparse(samples)
+            # ---- Handle hierarchical labels (c_idx, s_idx, combined_label) ----
+            # After collation, this often becomes a tuple of tensors
+            if isinstance(target, (list, tuple)) and len(target) == 3 and all(torch.is_tensor(t) for t in target):
+                target = target[2]  # combined_label
 
-            output = feature_extractor.forward([locations, features, samples.shape[0]]).detach()
+            # ---- Handle SimCLR views: samples can be [view1, view2] ----
+            if isinstance(samples, (list, tuple)):
+                # Compute embedding for each view and average them
+                view_outputs = []
+                for v in samples:
+                    if torch.is_tensor(v):
+                        v = v.to(device, non_blocking=True)
 
-            if extracted is not None and labels_ is not None:
-                extracted = torch.cat((extracted, output), 0)
-                labels_ = torch.cat((labels_, target), 0)
+                    locations, features = Classifier.denseToSparse(v)
+                    out = feature_extractor.forward([locations, features, v.shape[0]]).detach()
+                    view_outputs.append(out)
+
+                output = torch.stack(view_outputs, dim=0).mean(dim=0)  # (B, feat_dim)
+
             else:
-                extracted = output
-                labels_ = target
-        extracted = extracted.view(extracted.size(0), -1)
-        labels_ = labels_.view(labels_.size(0), -1)
-        assert extracted.shape[0] == labels_.shape[0]
+                # Single tensor case
+                if torch.is_tensor(samples):
+                    samples = samples.to(device, non_blocking=True)
 
-        return extracted, labels_
+                locations, features = Classifier.denseToSparse(samples)
+                output = feature_extractor.forward([locations, features, samples.shape[0]]).detach()
+
+            # Move labels to device for consistent concat (optional)
+            if torch.is_tensor(target):
+                target = target.to(device, non_blocking=True)
+
+            extracted.append(output)
+            labels_.append(target)
+
+    extracted = torch.cat(extracted, dim=0)
+    labels_ = torch.cat(labels_, dim=0) if torch.is_tensor(labels_[0]) else torch.tensor(labels_)
+
+    extracted = extracted.view(extracted.size(0), -1)
+    labels_ = labels_.view(labels_.size(0), -1)
+
+    assert extracted.shape[0] == labels_.shape[0]
+    return extracted, labels_
 
 
 def main():
