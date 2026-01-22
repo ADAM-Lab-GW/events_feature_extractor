@@ -4,7 +4,7 @@
 # 'run_feature_extractor.py'
 dataset:
   name: 'eventSym'   # ['ncaltech12', 'ncaltech256', 'ncaltech101', 'nmnist']
-  event_representation: 'histogram'  # ['histogram', 'voxel']
+  event_representation: 'voxel'  # ['histogram', 'voxel']
   nr_events_window: 50000  # The number of events in a window. 0 means that all events will be selected. Only for SCNN and histogram
 method:
   name: 'simclr'  # ['simclr', 'classifier']. 'simclr' - self-supervised learning; 'classifier' - linear evaluation or supervised learning with Phased LSTM
@@ -12,16 +12,16 @@ method:
   seed: 10
   checkpoint_save_period: 10
   epochs: 100
-  batch_size: 256  # the number of samples per iteration
+  batch_size: 32  # the number of samples per iteration
 checkpoint:
   epoch_start: 0
-  file: '/home/adamlab/repos/events_feature_extractor/checkpoint/simclr/eventSym/simclr_trial0_eventSym_scnn_seed_10_batch_256_epoch_100.tar'
-  id: 'trial0'  # An additional identifier that is appended to the name of a checkpoint file
+  file: ''
+  id: 'trial_voxel'  # An additional identifier that is appended to the name of a checkpoint file
 hardware:
   num_workers: 0  # The number used to load data
   gpu_device: 0  # [0, '0, 1, 2, ...']  # '0,1,2, ...' in case of multiple GPUs (only for the SCNN backbone)
 feature_extraction:
-  out_folder: './data/extracted_features/'
+  out_folder: './data/voxel/extracted_features/'
 
 
 # dataset:

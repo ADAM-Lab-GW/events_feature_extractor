@@ -484,7 +484,7 @@ class DataProvider():
                                      augmentation=False, nr_events_window=nr_events_window,
                                      events_representation=events_representation)
             elif dataset == "eventSym":
-                train_set = EventSym(repeat_augmentations, root="./data/EventSym/training",
+                train_set = EventSym(repeat_augmentations, root="./data/eventSym/training",
                                      transform=train_transform,
                                      augmentation=False, nr_events_window=nr_events_window,
                                      events_representation=events_representation)

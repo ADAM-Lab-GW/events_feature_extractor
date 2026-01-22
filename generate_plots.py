@@ -23,6 +23,7 @@ IMAGES_DIRECTORY = "./images/"
 
 try:
     os.mkdir(IMAGES_DIRECTORY)
+    
 except OSError:
     print("Creation of the directory %s failed" % IMAGES_DIRECTORY)
 else:
@@ -31,7 +32,7 @@ else:
 plt.style.use('seaborn')
 
 tex_fonts = {
-    "text.usetex": True,
+    "text.usetex": False,
     "font.family": "serif",
     "axes.labelsize": 10,
     "font.size": 10,
@@ -111,23 +112,23 @@ def plot_voxel_grid(voxel_grid, filename):
         img.save("./images/" + filename.split('/')[-2] + "_bin" + str(i) + '.jpg')
 
 
-events = np.load("data/eventsym/training/hazard_labels/Electricity sign/1_events.npy").astype(np.float32)
-plot_3d_events(events, "electricity_sign_1")
+# events = np.load("./data/eventSym/training/hazard_labels/Electricity sign/1_events.npy").astype(np.float32)
+# plot_3d_events(events, "electricity_sign_1")
 
-events = np.load("data/eventsym/training/traffic_signs/Pedestrian sign/1_events.npy").astype(np.float32)
-plot_3d_events(events, id="pedestrian_sign_1")
+# events = np.load("./data/eventSym/training/traffic_signs/Pedestrian sign/1_events.npy").astype(np.float32)
+# plot_3d_events(events, id="pedestrian_sign_1")
 
 # # ----------------------------------------
 
-# filename = "./data/N-Caltech256/training/tomato/221_0024.npy"
+# filename = "./data/eventSym/training/hazard_labels/Electricity sign/1_events.npy"
 # events = np.load(filename).astype(np.float32)
-# histogram = generate_event_histogram(events, (180, 240))
-# plot_histogram(histogram, filename, "_white_background")
+# histogram = generate_event_histogram(events, (260, 346))
+# plot_histogram(histogram, filename, "1")
 
-# filename = "./data/N-Caltech256/training/tomato/221_0005.npy"
+# filename = "./data/eventSym/training/traffic_signs/Pedestrian sign/1_events.npy"
 # events = np.load(filename).astype(np.float32)
-# histogram = generate_event_histogram(events, (180, 240))
-# plot_histogram(histogram, filename, "_complex_background")
+# histogram = generate_event_histogram(events, (260, 346))
+# plot_histogram(histogram, filename, "1")
 
 # filename = "./data/N-Caltech256/training/light-house/132_0050.npy"
 # events = np.load(filename).astype(np.float32)
@@ -168,12 +169,15 @@ plot_3d_events(events, id="pedestrian_sign_1")
 
 # # --------------------------------------------
 
-# filename = "./data/N-Caltech256/training/owl/152_0030.npy"
-# events = np.load(filename).astype(np.float32)
-# voxel_grid = events_to_voxel_grid(events, 10, 240, 180)
-# plot_voxel_grid(voxel_grid, filename)
+filename = "./data/eventSym/training/hazard_labels/Electricity sign/1_events.npy"
+events = np.load(filename).astype(np.float32)
+voxel_grid = events_to_voxel_grid(events, 10, 346, 260)
+plot_voxel_grid(voxel_grid, filename)
 
-
+filename = "./data/eventSym/training/traffic_signs/Pedestrian sign/1_events.npy"
+events = np.load(filename).astype(np.float32)
+voxel_grid = events_to_voxel_grid(events, 10, 346, 260)
+plot_voxel_grid(voxel_grid, filename)
 # # --------------------------------------------
 
 
