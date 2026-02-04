@@ -548,7 +548,7 @@ class DataProvider():
                 train_set = NCaltech(repeat_augmentations, root="./data/N-Caltech256/training",
                                      nr_events_window=nr_events_window, events_representation=events_representation)
             elif dataset == "eventSym":
-                train_set = EventSym(repeat_augmentations, root="./data/EventSym/training",
+                train_set = EventSym(repeat_augmentations, root="./data/eventSym/training",
                                 nr_events_window=nr_events_window, events_representation=events_representation)
             elif dataset == "ncaltech12":
                 train_set = NCaltech(repeat_augmentations, root="./data/N-Caltech12/training",
@@ -578,7 +578,7 @@ class DataProvider():
                                 transform=None, augmentation=False, nr_events_window=nr_events_window,
                                 events_representation=events_representation)
         elif dataset == "eventSym":
-            test_set = EventSym(repeat_augmentations=None, root="./data/EventSym/testing",
+            test_set = EventSym(repeat_augmentations=None, root="./data/eventSym/testing",
                                 transform=None, augmentation=False, nr_events_window=nr_events_window,
                                 events_representation=events_representation)
         elif dataset == "ncaltech12":

@@ -169,15 +169,15 @@ def plot_voxel_grid(voxel_grid, filename):
 
 # # --------------------------------------------
 
-filename = "./data/eventSym/training/hazard_labels/Electricity sign/1_events.npy"
-events = np.load(filename).astype(np.float32)
-voxel_grid = events_to_voxel_grid(events, 10, 346, 260)
-plot_voxel_grid(voxel_grid, filename)
+# filename = "./data/eventSym/training/hazard_labels/Electricity sign/1_events.npy"
+# events = np.load(filename).astype(np.float32)
+# voxel_grid = events_to_voxel_grid(events, 10, 346, 260)
+# plot_voxel_grid(voxel_grid, filename)
 
-filename = "./data/eventSym/training/traffic_signs/Pedestrian sign/1_events.npy"
-events = np.load(filename).astype(np.float32)
-voxel_grid = events_to_voxel_grid(events, 10, 346, 260)
-plot_voxel_grid(voxel_grid, filename)
+# filename = "./data/eventSym/training/traffic_signs/Pedestrian sign/1_events.npy"
+# events = np.load(filename).astype(np.float32)
+# voxel_grid = events_to_voxel_grid(events, 10, 346, 260)
+# plot_voxel_grid(voxel_grid, filename)
 # # --------------------------------------------
 
 
@@ -195,26 +195,26 @@ def plot_loss(filename1, line_name1,
     else:
         data = data1
         data["epoch"] = data["epoch"] + 1
-    sns.set(font_scale=1.5)
+    sns.set(font_scale=0.5)
     g = sns.lineplot(data=data, x="epoch", y="loss", hue=hue_name, style=hue_name, markers=True, dashes=False)
     g.set(xticks=np.insert(epochs[0::4], len(epochs[0::4]) - 1, len(epochs)))
     g.set_ylabel(y_label)
     g.set_xlabel(x_label)
-    g.set_title(title)
-    g.figure.savefig("./images/loss_plstm.pdf", format="pdf", bbox_inches="tight")
+    # g.set_title(title)
+    g.figure.savefig("./images/loss_scnn2.png", format="png",dpi=300)
     plt.close()
 
 
-# plot_loss(
-#     filename1="./checkpoint/standard/ncaltech101/plstm/setup1/ncaltech101/log_standard_ncaltech101_plstm_seed_10_batch_30.cvs",
-#     line_name1="1\%",
-#     filename2="./checkpoint/standard/ncaltech101/plstm/setup2/ncaltech101/log_standard_ncaltech101_plstm_seed_10_batch_30.cvs",
-#     line_name2="5\%",
-#     hue_name="Pct. of events",
-#     x_label="Epoch",
-#     y_label="Loss score",
-#     title="Phased LSTM: N-Caltech101"
-# )
+plot_loss(
+    filename1="checkpoint/simclr/eventSym/eventSymx2/log_simclr_trial_histogram_eventSym_scnn_seed_10_batch_32.csv",
+    line_name1="downscaled by a factor of 2",
+    filename2="./checkpoint/simclr/eventSym/histogram(batch_32)/log_simclr_trial_histogram_eventSym_scnn_seed_10_batch_32.csv",
+    line_name2="original resolution",
+    hue_name="",
+    x_label="Epoch",
+    y_label="Loss score",
+    title="SCNN feature extraction"
+)
 
 
 # # --------------------------------------------
