@@ -241,6 +241,7 @@ class EventSym:
         for_rep_list = []
         last_rep = None
 
+        rel_stem = str(Path(filename).relative_to(self.root).with_suffix("")) 
         for _ in range(self.repeat_augmentations):
             events = orig_events.copy()
 
@@ -268,7 +269,8 @@ class EventSym:
 
                 # t already microseconds; keep
                 # p already 0/1; keep for raw mode
-                return torch.from_numpy(events.astype(np.float32)), None, label
+                return torch.from_numpy(events.astype(np.float32)), None, label, rel_stem
+
 
 
             if self.events_mode == "voxel":
@@ -285,8 +287,9 @@ class EventSym:
 
             last_rep = rep
             for_rep_list.append(rep)
+        
+        return last_rep, for_rep_list, label, rel_stem
 
-        return last_rep, for_rep_list, label
     
 class NCaltech:
     """
