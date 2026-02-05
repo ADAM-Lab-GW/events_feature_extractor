@@ -15,13 +15,13 @@ method:
   batch_size: 32  # the number of samples per iteration
 checkpoint:
   epoch_start: 0
-  file: ''
-  id: 'trial_voxel'  # An additional identifier that is appended to the name of a checkpoint file
+  file: './checkpoint/simclr/eventSym/simclr_trial_hierarchy_eventSym_scnn_seed_10_batch_32_epoch_100.tar'
+  id: 'trial_hierarchy'  # An additional identifier that is appended to the name of a checkpoint file
 hardware:
   num_workers: 0  # The number used to load data
   gpu_device: 0  # [0, '0, 1, 2, ...']  # '0,1,2, ...' in case of multiple GPUs (only for the SCNN backbone)
 feature_extraction:
-  out_folder: './data/voxel/extracted_features/'
+  out_folder: './data/eventSym_hierarchy/extracted_features/'
 
 
 # dataset:

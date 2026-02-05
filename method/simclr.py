@@ -87,7 +87,11 @@ class SimCLR(torch.nn.Module):
 
         loss_meter = AverageMeter()
         statistics_dict = {}
-        for i, (_, data_augmented, _) in enumerate(train_loader):
+        for i, batch in enumerate(train_loader):
+            # batch can be (x, x_aug, y) OR (x, x_aug, y, rel_path) etc.
+            data_augmented = batch[1]
+            target = batch[2]  # if you need it (often unused in SimCLR)
+
             data = torch.stack(data_augmented, dim=1)
             d = data.size()
             train_x = data.view(d[0]*2, d[2], d[3], d[4]).cuda()

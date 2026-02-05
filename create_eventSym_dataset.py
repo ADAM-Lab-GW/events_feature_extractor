@@ -28,7 +28,7 @@ import numpy as np
 # CONFIG
 # ---------------------------
 INPUT_ROOT = "./data/eventsym"   # <-- change this
-OUTPUT_ROOT = "./data/eventSym"
+OUTPUT_ROOT = "./data/eventSym_hierarchy"  # <-- change this
 N_TEST_SAMPLES_PER_SUBCLASS = 10
 RANDOM_SEED = 8932857495889437
 
