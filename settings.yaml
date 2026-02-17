@@ -11,11 +11,11 @@ method:
   backbone: 'scnn'  # ['scnn', 'plstm']  'plstm' (Phased LSTM) can be used only with 'classifier'
   seed: 10
   checkpoint_save_period: 10
-  epochs: 100
+  epochs: 5
   batch_size: 32  # the number of samples per iteration
 checkpoint:
   epoch_start: 0
-  file: './checkpoint/simclr/eventSym/simclr_trial_hierarchy_eventSym_scnn_seed_10_batch_32_epoch_100.tar'
+  file: './checkpoint/simclr/eventSym/simclr_trial_hierarchy_eventSym_scnn_seed_10_batch_32_epoch_5.tar'
   id: 'trial_hierarchy'  # An additional identifier that is appended to the name of a checkpoint file
 hardware:
   num_workers: 0  # The number used to load data
