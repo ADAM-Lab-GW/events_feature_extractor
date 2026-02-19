@@ -27,9 +27,9 @@ import numpy as np
 # ---------------------------
 # CONFIG
 # ---------------------------
-INPUT_ROOT = "./data/eventSym_x2"   # <-- change this
-OUTPUT_ROOT = "./data/eventSym_x2"
-N_TEST_SAMPLES_PER_SUBCLASS = 10
+INPUT_ROOT = "./data/eventSym"   # <-- change this
+OUTPUT_ROOT = "./data/eventSym_10classes"  # <-- change this
+N_TEST_SAMPLES_PER_SUBCLASS = 1
 RANDOM_SEED = 8932857495889437
 
 TRAIN_FOLDER_LL = "training"
