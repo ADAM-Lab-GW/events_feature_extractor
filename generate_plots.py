@@ -169,10 +169,10 @@ def plot_voxel_grid(voxel_grid, filename):
 
 # # --------------------------------------------
 
-# filename = "./data/eventSym/training/hazard_labels/Electricity sign/1_events.npy"
-# events = np.load(filename).astype(np.float32)
-# voxel_grid = events_to_voxel_grid(events, 10, 346, 260)
-# plot_voxel_grid(voxel_grid, filename)
+filename = "./data/eventSym_10classes/training/hazard_symbols/Flammable material sign/1_events.npy"
+events = np.load(filename).astype(np.float32)
+voxel_grid = events_to_voxel_grid(events, 10, 346, 260)
+plot_voxel_grid(voxel_grid, filename)
 
 # filename = "./data/eventSym/training/traffic_signs/Pedestrian sign/1_events.npy"
 # events = np.load(filename).astype(np.float32)
@@ -205,16 +205,16 @@ def plot_loss(filename1, line_name1,
     plt.close()
 
 
-plot_loss(
-    filename1="checkpoint/simclr/eventSym/eventSymx2/log_simclr_trial_histogram_eventSym_scnn_seed_10_batch_32.csv",
-    line_name1="downscaled by a factor of 2",
-    filename2="./checkpoint/simclr/eventSym/histogram(batch_32)/log_simclr_trial_histogram_eventSym_scnn_seed_10_batch_32.csv",
-    line_name2="original resolution",
-    hue_name="",
-    x_label="Epoch",
-    y_label="Loss score",
-    title="SCNN feature extraction"
-)
+# plot_loss(
+#     filename1="checkpoint/simclr/eventSym/eventSymx2/log_simclr_trial_histogram_eventSym_scnn_seed_10_batch_32.csv",
+#     line_name1="downscaled by a factor of 2",
+#     filename2="./checkpoint/simclr/eventSym/histogram(batch_32)/log_simclr_trial_histogram_eventSym_scnn_seed_10_batch_32.csv",
+#     line_name2="original resolution",
+#     hue_name="",
+#     x_label="Epoch",
+#     y_label="Loss score",
+#     title="SCNN feature extraction"
+# )
 
 
 # # --------------------------------------------
