@@ -15,7 +15,7 @@ method:
   batch_size: 32  # the number of samples per iteration
 checkpoint:
   epoch_start: 0
-  file: './checkpoint/simclr/eventSym/simclr_trial_10classes_eventSym_scnn_seed_10_batch_32_epoch_100.tar'
+  file: ''
   id: 'trial_10classes'  # An additional identifier that is appended to the name of a checkpoint file
 hardware:
   num_workers: 0  # The number used to load data

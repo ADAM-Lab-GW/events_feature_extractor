@@ -11,6 +11,7 @@ import sys
 
 import numpy as np
 import torch.optim
+import torch
 from torch.backends import cudnn
 from torch.cuda import manual_seed, manual_seed_all
 
@@ -145,4 +146,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+	main()
