@@ -167,7 +167,7 @@ class EventSym:
         height=260,
         width=346,
         nr_events_window=0,
-        augmentation=False,
+        augmentation=True,
         shuffle=True,
         transform=None,
         events_representation=None,  # None | "voxel" | "histogram"
@@ -431,17 +431,17 @@ class DataProvider():
                                                            interpolation=transforms.InterpolationMode.BILINEAR)
             train_transform = transforms.Compose([rnd_resizedcrop, rnd_hflip])
         elif method == "simclr" and dataset == "eventSym":
-            # rnd_rot = transforms.RandomRotation(10., interpolation=transforms.InterpolationMode.BILINEAR)
-            # rnd_hflip = transforms.RandomHorizontalFlip(p=0.5)
-            # rnd_erase = transforms.RandomErasing()
+            rnd_rot = transforms.RandomRotation(10., interpolation=transforms.InterpolationMode.BILINEAR)
+            rnd_hflip = transforms.RandomHorizontalFlip(p=0.5)
+            rnd_erase = transforms.RandomErasing()
             # rnd_blur = transforms.GaussianBlur(
             #     (int(side[1] * .1) if int(side[1] * .1) % 2 != 0 else int(side[1] * .1) + 1),
             #     int(side[0] * .1))
-            # rnd_resizedcrop = transforms.RandomResizedCrop(size=side, scale=(0.08, 1.0),
-            #                                                ratio=(0.75, 1.3333333333333333),
-            #                                                interpolation=transforms.InterpolationMode.BILINEAR)
-            # train_transform = transforms.Compose([rnd_resizedcrop, rnd_hflip, rnd_blur, rnd_rot, rnd_erase])
-            train_transform = None
+            rnd_resizedcrop = transforms.RandomResizedCrop(size=side, scale=(0.08, 1.0),
+                                                           ratio=(0.75, 1.3333333333333333),
+                                                           interpolation=transforms.InterpolationMode.BILINEAR)
+            train_transform = transforms.Compose([rnd_resizedcrop, rnd_hflip, rnd_rot, rnd_erase])
+            # train_transform = None
         elif method == "simclr" and dataset == "nmnist":
             rnd_rot = transforms.RandomRotation(10., interpolation=transforms.InterpolationMode.BILINEAR)
             rnd_hflip = transforms.RandomHorizontalFlip(p=0.5)
