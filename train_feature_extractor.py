@@ -113,12 +113,12 @@ if settings.checkpoint_file != "":
 
 def main():
     # Create checkpoint path:
-    if not os.path.exists("./checkpoint/" + str(settings.method_name) + "/" + str(settings.dataset_name)):
-        os.makedirs("./checkpoint/" + str(settings.method_name) + "/" + str(settings.dataset_name))
+    if not os.path.exists("./checkpoint/" + str(settings.method_name) + "/" + str(settings.dataset_name)+ "/" + str(settings.experiment)):
+        os.makedirs("./checkpoint/" + str(settings.method_name) + "/" + str(settings.dataset_name)+ "/" + str(settings.experiment))
 
     # Create log file:
     log_file = "./checkpoint/" + str(settings.method_name) + "/" + str(
-        settings.dataset_name) + "/log_" + settings.checkpoint_id + ".csv"
+        settings.dataset_name) + "/" + str(settings.experiment) + "/log_" + settings.checkpoint_id + ".csv"
     mode = 'a' if os.path.exists(log_file) else 'w'
     if mode == 'w':
         with open(log_file, mode) as myfile:
@@ -126,7 +126,7 @@ def main():
 
     # Create args file:
     commandline_settings = "./checkpoint/" + str(settings.method_name) + "/" + str(
-        settings.dataset_name) + "/args_" + settings.checkpoint_id + ".csv"
+        settings.dataset_name) + "/" + str(settings.experiment) + "/args_" + settings.checkpoint_id + ".csv"
     with open(commandline_settings, 'w') as f:
         f.write('\n'.join(sys.argv[1:]))
     for epoch in range(settings.epoch_start, settings.epochs):
@@ -134,7 +134,7 @@ def main():
         with open(log_file, "a") as myfile:
             myfile.write(str(epoch) + "," + str(loss_train) + "," + str(accuracy_train) + "\n")
         checkpoint_path = "./checkpoint/" + str(settings.method_name) + "/" + str(
-            settings.dataset_name) + "/" + settings.checkpoint_id + "_epoch_" + str(epoch + 1) + ".tar"
+            settings.dataset_name) + "/" + str(settings.experiment) + "/" + settings.checkpoint_id + "_epoch_" + str(epoch + 1) + ".tar"
         if epoch % settings.checkpoint_save_period == 0 or epoch + 1 == settings.epochs:
             print("Saving in:", checkpoint_path)
             model.save(checkpoint_path)

@@ -16,7 +16,7 @@ class Settings:
 
         with open(settings_yaml, 'r') as stream:
             settings = yaml.load(stream, yaml.Loader)
-
+            
             # --- hardware ---
             hardware = settings['hardware']
             gpu_device = hardware['gpu_device']
@@ -52,6 +52,7 @@ class Settings:
 
             # --- checkpoint ---
             checkpoint = settings['checkpoint']
+            self.experiment = checkpoint['id']
             self.epoch_start = checkpoint['epoch_start']
             self.checkpoint_file = checkpoint['file']
 
