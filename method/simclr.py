@@ -14,7 +14,6 @@ from torch import nn
 import torch
 import tqdm
 
-from SparseConvNet.examples.ScanNet import data
 from utils import AverageMeter
 
 
