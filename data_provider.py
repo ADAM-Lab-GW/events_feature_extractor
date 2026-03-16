@@ -282,6 +282,8 @@ class EventSym:
                 rep_swapped = np.moveaxis(rep, -1, 0)  # (C,H,W)
                 rep_transformed = self.transform(torch.from_numpy(rep_swapped)).numpy()
                 rep = np.moveaxis(rep_transformed, 0, -1)
+                
+                rep = random_swap_channels(rep)
 
             last_rep = rep
             for_rep_list.append(rep)
@@ -411,7 +413,7 @@ class DataProvider():
         elif dataset == "ncaltech101":
             return 101
         elif dataset == "eventSym":
-            return 3
+            return 10
 
     @staticmethod
     def get_train_transforms(method, dataset):
@@ -434,9 +436,9 @@ class DataProvider():
             rnd_rot = transforms.RandomRotation(10., interpolation=transforms.InterpolationMode.BILINEAR)
             rnd_hflip = transforms.RandomHorizontalFlip(p=0.5)
             rnd_erase = transforms.RandomErasing()
-            # rnd_blur = transforms.GaussianBlur(
-            #     (int(side[1] * .1) if int(side[1] * .1) % 2 != 0 else int(side[1] * .1) + 1),
-            #     int(side[0] * .1))
+            rnd_blur = transforms.GaussianBlur(
+                (int(side[1] * .1) if int(side[1] * .1) % 2 != 0 else int(side[1] * .1) + 1),
+                int(side[0] * .1))
             rnd_resizedcrop = transforms.RandomResizedCrop(size=side, scale=(0.08, 1.0),
                                                            ratio=(0.75, 1.3333333333333333),
                                                            interpolation=transforms.InterpolationMode.BILINEAR)
@@ -486,7 +488,7 @@ class DataProvider():
             elif dataset == "eventSym":
                 train_set = EventSym(repeat_augmentations, root="./data/eventSym/training",
                                      transform=train_transform,
-                                     augmentation=False, nr_events_window=nr_events_window,
+                                     augmentation=True, nr_events_window=nr_events_window,
                                      events_representation=events_representation)
             else:
                 raise ValueError("Check code")

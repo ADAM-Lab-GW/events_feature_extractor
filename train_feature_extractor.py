@@ -97,7 +97,7 @@ elif settings.method_name == "simclr":
                                                      data_type="simclr",
                                                      data_size=settings.batch_size,
                                                      train_transform=train_transform,
-                                                     repeat_augmentations=2,
+                                                     repeat_augmentations=5,
                                                      num_workers=settings.num_workers,
                                                      drop_last=False,
                                                      events_representation=settings.events_representation,
