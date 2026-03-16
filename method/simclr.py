@@ -90,9 +90,7 @@ class SimCLR(torch.nn.Module):
         for i, (_, data_augmented, _) in enumerate(train_loader):
             data = torch.stack(data_augmented, dim=1)
             d = data.size()
-
-            B, K, C, H, W = data.shape
-            train_x = data.view(B * K, C, H, W).cuda()
+            train_x = data.view(d[0]*2, d[2], d[3], d[4]).cuda()
             
             self.optimizer.zero_grad()
             if self.net.feature_extractor.name == "scnn":
