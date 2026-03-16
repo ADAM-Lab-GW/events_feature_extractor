@@ -143,9 +143,9 @@ def extract(feature_extractor, data_loader):
 
 def main():
     extracted, labels_ = extract(feature_extractor, train_loader)
-    write_features(extracted, labels_, settings.out_folder + settings.dataset_name + "/training/")
+    write_features(extracted, labels_, settings.out_folder + settings.dataset_name + settings.experiment + "/training/")
     extracted, labels_ = extract(feature_extractor, test_loader)
-    write_features(extracted, labels_, settings.out_folder + settings.dataset_name + "/testing/")
+    write_features(extracted, labels_, settings.out_folder + settings.dataset_name + settings.experiment + "/testing/")
 
 
 if __name__ == "__main__":
