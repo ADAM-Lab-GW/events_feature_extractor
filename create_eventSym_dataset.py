@@ -29,7 +29,7 @@ import numpy as np
 # ---------------------------
 INPUT_ROOT = "./data/eventSym"   # <-- change this
 OUTPUT_ROOT = "./data/eventSym"  # <-- change this
-N_TEST_SAMPLES_PER_SUBCLASS = 1
+N_TEST_SAMPLES_PER_SUBCLASS = 10
 RANDOM_SEED = 8932857495889437
 
 TRAIN_FOLDER_LL = "training"
