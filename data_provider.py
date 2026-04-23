@@ -248,6 +248,7 @@ class EventSym:
             if self.augmentation:
                 events = random_shift_events(events, resolution=(self.height, self.width))
                 events = random_flip_events_along_x(events, resolution=(self.height, self.width))
+                events = flip_events_along_y(events, resolution=(self.height, self.width))
 
             # windowing
             cur_n = events.shape[0]

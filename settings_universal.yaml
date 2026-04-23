@@ -5,23 +5,23 @@
 dataset:
   name: 'eventSym'   # ['ncaltech12', 'ncaltech256', 'ncaltech101', 'nmnist']
   event_representation: 'histogram'  # ['histogram', 'voxel']
-  nr_events_window: 0  # The number of events in a window. 0 means that all events will be selected. Only for SCNN and histogram
+  nr_events_window: 100000  # The number of events in a window. 0 means that all events will be selected. Only for SCNN and histogram
 method:
   name: 'simclr'  # ['simclr', 'classifier']. 'simclr' - self-supervised learning; 'classifier' - linear evaluation or supervised learning with Phased LSTM
   backbone: 'scnn'  # ['scnn', 'plstm']  'plstm' (Phased LSTM) can be used only with 'classifier'
   seed: 10
   checkpoint_save_period: 10
-  epochs: 100
+  epochs: 300
   batch_size: 32  # the number of samples per iteration
 checkpoint:
   epoch_start: 0
-  file: './checkpoint/simclr/eventSym/universal/simclr_universal_eventSym_scnn_seed_10_batch_32_epoch_100.tar'
-  id: 'universal'  # An additional identifier that is appended to the name of a checkpoint file
+  file: ''
+  id: 'universal_v2'  # An additional identifier that is appended to the name of a checkpoint file
 hardware:
   num_workers: 16  # The number used to load data
   gpu_device: 0  # [0, '0, 1, 2, ...']  # '0,1,2, ...' in case of multiple GPUs (only for the SCNN backbone)
 feature_extraction:
-  out_folder: './data/eventSym/extracted_features/universal_symbols'
+  out_folder: './data/eventSym/extracted_features/'
 
 
 # dataset:
