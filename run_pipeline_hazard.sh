@@ -18,7 +18,7 @@ SOURCE_FOLDER1="/home/ubuntu/events_feature_extractor/data/eventSym/extracted_fe
 SOURCE_FOLDER2="/home/ubuntu/events_feature_extractor/data/eventSym/extracted_features/eventSym/hazard_v2/testing"
 COPY_DEST="/home/ubuntu/original_resolution/hazard_symbols/v2/"
 MOVE_DEST="/home/ubuntu/events_lifelong_learning/store/datasets/hazard/eventSym/"
-DATA_DIR ="/home/ubuntu/events_lifelong_learning/store/datasets/hazard/"
+DATA_DIR="/home/ubuntu/events_lifelong_learning/store/datasets/hazard/"
 
 # Second environment/project
 PROJECT2_DIR="/home/ubuntu/events_lifelong_learning"
