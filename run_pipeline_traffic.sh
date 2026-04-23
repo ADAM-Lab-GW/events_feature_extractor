@@ -18,7 +18,7 @@ SOURCE_FOLDER1="/home/ubuntu/events_feature_extractor/data/eventSym/extracted_fe
 SOURCE_FOLDER2="/home/ubuntu/events_feature_extractor/data/eventSym/extracted_features/eventSym/traffic_v2/testing"
 COPY_DEST="/home/ubuntu/original_resolution/traffic_symbols/v2/"
 MOVE_DEST="/home/ubuntu/events_lifelong_learning/store/datasets/traffic/eventSym/"
-DATA_DIR ="/home/ubuntu/events_lifelong_learning/store/datasets/traffic/"
+DATA_DIR="/home/ubuntu/events_lifelong_learning/store/datasets/traffic/"
 
 # Second environment/project
 PROJECT2_DIR="/home/ubuntu/events_lifelong_learning"

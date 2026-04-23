@@ -11,14 +11,14 @@ VENV1_DIR="/home/ubuntu/events_feature_extractor/venv"
 SETTINGS1="/home/ubuntu/events_feature_extractor/settings_wayfinding.yaml"
 SCRIPT1="python train_feature_extractor.py --settings_file \"$SETTINGS1\""
 SCRIPT2="python extract_features.py --settings_file \"$SETTINGS1\""
-CHECKPOINT="/home/ubuntu/events_feature_extractor/checkpoint/simclr/eventSym/traffic_v2/simclr_traffic_v2_eventSym_scnn_seed_10_batch_32_epoch_300.tar"
+CHECKPOINT="/home/ubuntu/events_feature_extractor/checkpoint/simclr/eventSym/wayfinding_v2/simclr_wayfinding_v2_eventSym_scnn_seed_10_batch_32_epoch_300.tar"
 
 # Folder operations
-SOURCE_FOLDER1="/home/ubuntu/events_feature_extractor/data/eventSym/extracted_features/eventSym/traffic_v2/training"
-SOURCE_FOLDER2="/home/ubuntu/events_feature_extractor/data/eventSym/extracted_features/eventSym/traffic_v2/testing"
-COPY_DEST="/home/ubuntu/original_resolution/traffic_symbols/v2/"
-MOVE_DEST="/home/ubuntu/events_lifelong_learning/store/datasets/traffic/eventSym/"
-DATA_DIR ="/home/ubuntu/events_lifelong_learning/store/datasets/traffic/"
+SOURCE_FOLDER1="/home/ubuntu/events_feature_extractor/data/eventSym/extracted_features/eventSym/wayfinding_v2/training"
+SOURCE_FOLDER2="/home/ubuntu/events_feature_extractor/data/eventSym/extracted_features/eventSym/wayfinding_v2/testing"
+COPY_DEST="/home/ubuntu/original_resolution/wayfinding_symbols/v2/"
+MOVE_DEST="/home/ubuntu/events_lifelong_learning/store/datasets/wayfinding/eventSym/"
+DATA_DIR="/home/ubuntu/events_lifelong_learning/store/datasets/wayfinding/"
 
 # Second environment/project
 PROJECT2_DIR="/home/ubuntu/events_lifelong_learning"
