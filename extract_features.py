@@ -48,12 +48,12 @@ print("Total trainable parameters: " + str(total_parameterss))
 data_provider = DataProvider(settings.seed)
 num_classes = data_provider.get_num_classes(settings.dataset_name)
 
-test_loader = data_provider.get_test_loader(dataset=settings.dataset_name,
+test_loader = data_provider.get_test_loader(dataset=settings.dataset_name,path=settings.data_path,
                                             data_size=settings.batch_size,
                                             num_workers=settings.num_workers,
                                             events_representation=settings.events_representation,
                                             nr_events_window=settings.nr_events_window)
-train_loader, _ = data_provider.get_train_loader(dataset=settings.dataset_name,
+train_loader, _ = data_provider.get_train_loader(dataset=settings.dataset_name, path=settings.data_path,
                                                  data_type="extract",
                                                  data_size=settings.batch_size,
                                                  num_workers=settings.num_workers,
