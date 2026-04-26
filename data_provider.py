@@ -181,6 +181,8 @@ class EventSym:
         self.nr_events_window = nr_events_window
         self.events_mode = events_representation
 
+        print("Loading dataset from {}...".format(str(root)))
+
         self.class_names = sorted([p.name for p in self.root.iterdir() if p.is_dir()])
         self.class_to_idx = {class_name: idx for idx, class_name in enumerate(self.class_names)}
         self.idx_to_class = {idx: class_name for class_name, idx in self.class_to_idx.items()}
