@@ -63,7 +63,7 @@ eval "$SCRIPT1"
 # -----------------------------
 echo "[3/8] Editing settings file..."
 
-sed -i "s|^file: \"\"|file: \"$CHECKPOINT\"|" "$SETTINGS1"
+sed -i "s|^file:.*|file: \"$CHECKPOINT\"|" "$SETTINGS1"
 
 echo "Updated settings file line:"
 grep '^RUN_STAGE' "$SETTINGS1" || true
