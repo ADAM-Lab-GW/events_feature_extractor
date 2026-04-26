@@ -4,6 +4,7 @@
 # 'run_feature_extractor.py'
 dataset:
   name: 'eventSym'   # ['ncaltech12', 'ncaltech256', 'ncaltech101', 'nmnist']
+  path: './data/eventSym/'  # The path to the dataset. Only for 'eventSym' dataset
   event_representation: 'histogram'  # ['histogram', 'voxel']
   nr_events_window: 100000  # The number of events in a window. 0 means that all events will be selected. Only for SCNN and histogram
 method:

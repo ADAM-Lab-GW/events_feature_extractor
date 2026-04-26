@@ -153,11 +153,11 @@ def events_to_voxel_grid(events, num_bins, width, height):
 class EventSym:
     """
     Expects folder structure:
-      root/<class_name>/<sub_class_name>/<sample>.npy
+      root/<label_name>/<sample>.npy
 
     Example:
-      train_ds = EventSym(root="./data/EventSym/training", ...)
-      test_ds  = EventSym(root="./data/EventSym/testing", ...)
+      train_ds = EventSym(root="./data/eventSym/training", ...)
+      test_ds  = EventSym(root="./data/eventSym/testing", ...)
     """
 
     def __init__(
@@ -171,7 +171,6 @@ class EventSym:
         shuffle=True,
         transform=None,
         events_representation=None,  # None | "voxel" | "histogram"
-        return_hierarchical_labels=True,
     ):
         self.root = Path(root)
         self.repeat_augmentations = repeat_augmentations if repeat_augmentations is not None else 1
@@ -181,54 +180,39 @@ class EventSym:
         self.augmentation = augmentation
         self.nr_events_window = nr_events_window
         self.events_mode = events_representation
-        self.return_hierarchical_labels = return_hierarchical_labels
 
         self.class_names = sorted([p.name for p in self.root.iterdir() if p.is_dir()])
+        self.class_to_idx = {class_name: idx for idx, class_name in enumerate(self.class_names)}
+        self.idx_to_class = {idx: class_name for class_name, idx in self.class_to_idx.items()}
 
         self.files = []
-        self.labels = []          # combined label: (class, subclass) -> one index
-        self.class_labels = []    # class index
-        self.subclass_labels = [] # subclass index within class
+        self.labels = []
 
-        combined_label = 0
-        for c_idx, class_name in enumerate(self.class_names):
+        for class_name in self.class_names:
             class_dir = self.root / class_name
-            subclasses = sorted([p.name for p in class_dir.iterdir() if p.is_dir()])
+            label = self.class_to_idx[class_name]
 
-            for s_idx, sub_name in enumerate(subclasses):
-                sub_dir = class_dir / sub_name
-                npy_files = sorted(sub_dir.glob("*.npy"))
+            npy_files = sorted(class_dir.glob("*.npy"))
 
-                for f in npy_files:
-                    self.files.append(str(f))
-                    self.labels.append(combined_label)
-                    self.class_labels.append(c_idx)
-                    self.subclass_labels.append(s_idx)
-
-                combined_label += 1
+            for f in npy_files:
+                self.files.append(str(f))
+                self.labels.append(label)
 
         self.nr_samples = len(self.files)
-        self.nr_classes = combined_label
+        self.nr_classes = len(self.class_names)
 
         if shuffle and self.nr_samples > 0:
-            zipped = list(zip(self.files, self.labels, self.class_labels, self.subclass_labels))
+            zipped = list(zip(self.files, self.labels))
             random.seed(7)
             random.shuffle(zipped)
-            self.files, self.labels, self.class_labels, self.subclass_labels = map(list, zip(*zipped))
+            self.files, self.labels = map(list, zip(*zipped))
 
     def __len__(self):
         return len(self.files)
 
-
     def __getitem__(self, idx):
         filename = self.files[idx]
-        combined_label = self.labels[idx]
-        c_idx = self.class_labels[idx]
-        s_idx = self.subclass_labels[idx]
-
-        label = combined_label
-        if self.return_hierarchical_labels:
-            label = (c_idx, s_idx, combined_label)
+        label = self.labels[idx]
 
         orig_events = np.load(filename).astype(np.float32)  # expected Nx4: x,y,t,p
         nr_events = orig_events.shape[0]
@@ -237,59 +221,198 @@ class EventSym:
             empty = torch.zeros((0, 4), dtype=torch.float32)
             return empty, None, label
 
-        # repeat augmentations
         for_rep_list = []
         last_rep = None
 
         for _ in range(self.repeat_augmentations):
             events = orig_events.copy()
 
-            # augmentation: shift + optional x flip (NO vertical flip)
             if self.augmentation:
                 events = random_shift_events(events, resolution=(self.height, self.width))
                 events = random_flip_events_along_x(events, resolution=(self.height, self.width))
                 events = flip_events_along_y(events, resolution=(self.height, self.width))
 
-            # windowing
             cur_n = events.shape[0]
             if self.nr_events_window and self.nr_events_window > 0 and cur_n > self.nr_events_window:
                 window_start = random.randrange(0, max(1, cur_n - self.nr_events_window))
                 window_end = min(cur_n, window_start + self.nr_events_window)
                 events = events[window_start:window_end, :]
 
-            # RAW events mode (like NCaltech)
             if self.events_mode is None:
                 cur_n = events.shape[0]
                 k = max(2000, int(cur_n * 0.01))
                 k = min(k, cur_n)
+
                 random.seed(1243253454234)
                 indices = random.sample(range(cur_n), k)
                 indices.sort()
                 events = events[indices]
 
-                # t already microseconds; keep
-                # p already 0/1; keep for raw mode
                 return torch.from_numpy(events.astype(np.float32)), None, label
 
-
             if self.events_mode == "voxel":
-                rep = events_to_voxel_grid(events, num_bins=10, width=self.width, height=self.height)
+                rep = events_to_voxel_grid(
+                    events,
+                    num_bins=10,
+                    width=self.width,
+                    height=self.height,
+                )
                 rep = np.moveaxis(rep, 0, -1)  # (H,W,B)
             else:
-                # treat anything else as histogram
                 rep = generate_event_histogram(events, (self.height, self.width))  # (H,W,2)
 
             if self.transform is not None:
                 rep_swapped = np.moveaxis(rep, -1, 0)  # (C,H,W)
                 rep_transformed = self.transform(torch.from_numpy(rep_swapped)).numpy()
                 rep = np.moveaxis(rep_transformed, 0, -1)
-                
+
                 rep = random_swap_channels(rep)
 
             last_rep = rep
             for_rep_list.append(rep)
 
         return last_rep, for_rep_list, label
+    
+# class EventSym:
+#     """
+#     Expects folder structure:
+#       root/<class_name>/<sub_class_name>/<sample>.npy
+
+#     Example:
+#       train_ds = EventSym(root="./data/EventSym/training", ...)
+#       test_ds  = EventSym(root="./data/EventSym/testing", ...)
+#     """
+
+#     def __init__(
+#         self,
+#         repeat_augmentations,
+#         root,
+#         height=260,
+#         width=346,
+#         nr_events_window=0,
+#         augmentation=False,
+#         shuffle=True,
+#         transform=None,
+#         events_representation=None,  # None | "voxel" | "histogram"
+#         return_hierarchical_labels=True,
+#     ):
+#         self.root = Path(root)
+#         self.repeat_augmentations = repeat_augmentations if repeat_augmentations is not None else 1
+#         self.transform = transform
+#         self.width = width
+#         self.height = height
+#         self.augmentation = augmentation
+#         self.nr_events_window = nr_events_window
+#         self.events_mode = events_representation
+#         self.return_hierarchical_labels = return_hierarchical_labels
+
+#         self.class_names = sorted([p.name for p in self.root.iterdir() if p.is_dir()])
+
+#         self.files = []
+#         self.labels = []          # combined label: (class, subclass) -> one index
+#         self.class_labels = []    # class index
+#         self.subclass_labels = [] # subclass index within class
+
+#         combined_label = 0
+#         for c_idx, class_name in enumerate(self.class_names):
+#             class_dir = self.root / class_name
+#             subclasses = sorted([p.name for p in class_dir.iterdir() if p.is_dir()])
+
+#             for s_idx, sub_name in enumerate(subclasses):
+#                 sub_dir = class_dir / sub_name
+#                 npy_files = sorted(sub_dir.glob("*.npy"))
+
+#                 for f in npy_files:
+#                     self.files.append(str(f))
+#                     self.labels.append(combined_label)
+#                     self.class_labels.append(c_idx)
+#                     self.subclass_labels.append(s_idx)
+
+#                 combined_label += 1
+
+#         self.nr_samples = len(self.files)
+#         self.nr_classes = combined_label
+
+#         if shuffle and self.nr_samples > 0:
+#             zipped = list(zip(self.files, self.labels, self.class_labels, self.subclass_labels))
+#             random.seed(7)
+#             random.shuffle(zipped)
+#             self.files, self.labels, self.class_labels, self.subclass_labels = map(list, zip(*zipped))
+
+#     def __len__(self):
+#         return len(self.files)
+
+
+#     def __getitem__(self, idx):
+#         filename = self.files[idx]
+#         combined_label = self.labels[idx]
+#         c_idx = self.class_labels[idx]
+#         s_idx = self.subclass_labels[idx]
+
+#         label = combined_label
+#         if self.return_hierarchical_labels:
+#             label = (c_idx, s_idx, combined_label)
+
+#         orig_events = np.load(filename).astype(np.float32)  # expected Nx4: x,y,t,p
+#         nr_events = orig_events.shape[0]
+
+#         if nr_events == 0:
+#             empty = torch.zeros((0, 4), dtype=torch.float32)
+#             return empty, None, label
+
+#         # repeat augmentations
+#         for_rep_list = []
+#         last_rep = None
+
+#         for _ in range(self.repeat_augmentations):
+#             events = orig_events.copy()
+
+#             # augmentation: shift + optional x flip (NO vertical flip)
+#             if self.augmentation:
+#                 events = random_shift_events(events, resolution=(self.height, self.width))
+#                 events = random_flip_events_along_x(events, resolution=(self.height, self.width))
+#                 events = flip_events_along_y(events, resolution=(self.height, self.width))
+
+#             # windowing
+#             cur_n = events.shape[0]
+#             if self.nr_events_window and self.nr_events_window > 0 and cur_n > self.nr_events_window:
+#                 window_start = random.randrange(0, max(1, cur_n - self.nr_events_window))
+#                 window_end = min(cur_n, window_start + self.nr_events_window)
+#                 events = events[window_start:window_end, :]
+
+#             # RAW events mode (like NCaltech)
+#             if self.events_mode is None:
+#                 cur_n = events.shape[0]
+#                 k = max(2000, int(cur_n * 0.01))
+#                 k = min(k, cur_n)
+#                 random.seed(1243253454234)
+#                 indices = random.sample(range(cur_n), k)
+#                 indices.sort()
+#                 events = events[indices]
+
+#                 # t already microseconds; keep
+#                 # p already 0/1; keep for raw mode
+#                 return torch.from_numpy(events.astype(np.float32)), None, label
+
+
+#             if self.events_mode == "voxel":
+#                 rep = events_to_voxel_grid(events, num_bins=10, width=self.width, height=self.height)
+#                 rep = np.moveaxis(rep, 0, -1)  # (H,W,B)
+#             else:
+#                 # treat anything else as histogram
+#                 rep = generate_event_histogram(events, (self.height, self.width))  # (H,W,2)
+
+#             if self.transform is not None:
+#                 rep_swapped = np.moveaxis(rep, -1, 0)  # (C,H,W)
+#                 rep_transformed = self.transform(torch.from_numpy(rep_swapped)).numpy()
+#                 rep = np.moveaxis(rep_transformed, 0, -1)
+                
+#                 rep = random_swap_channels(rep)
+
+#             last_rep = rep
+#             for_rep_list.append(rep)
+
+#         return last_rep, for_rep_list, label
     
 class NCaltech:
     """
@@ -464,7 +587,7 @@ class DataProvider():
             raise ValueError("The method {} is not recognized".format(str(method)))
         return train_transform
 
-    def get_train_loader(self, dataset, data_type, data_size, train_transform, repeat_augmentations, num_workers,
+    def get_train_loader(self, dataset, path, data_type, data_size, train_transform, repeat_augmentations, num_workers,
                          drop_last, nr_events_window, events_representation):
         if data_type == "simclr":
             if dataset == "ncaltech256":
@@ -487,7 +610,7 @@ class DataProvider():
                                      augmentation=False, nr_events_window=nr_events_window,
                                      events_representation=events_representation)
             elif dataset == "eventSym":
-                train_set = EventSym(repeat_augmentations, root="./data/eventSym/training",
+                train_set = EventSym(repeat_augmentations, root=path+"/training/",
                                      transform=train_transform,
                                      augmentation=True, nr_events_window=nr_events_window,
                                      events_representation=events_representation)
@@ -528,7 +651,7 @@ class DataProvider():
                 train_set = NCaltech(repeat_augmentations, root="./data/N-Caltech256/training",
                                      nr_events_window=nr_events_window, events_representation=None)
             elif dataset == "eventSym":
-                train_set = EventSym(repeat_augmentations, root="./data/EventSym/training",
+                train_set = EventSym(repeat_augmentations, root=path+"/training/",
                                      nr_events_window=nr_events_window, events_representation=None)
             elif dataset == "ncaltech12":
                 train_set = NCaltech(repeat_augmentations, root="./data/N-Caltech12/training",
@@ -551,7 +674,7 @@ class DataProvider():
                 train_set = NCaltech(repeat_augmentations, root="./data/N-Caltech256/training",
                                      nr_events_window=nr_events_window, events_representation=events_representation)
             elif dataset == "eventSym":
-                train_set = EventSym(repeat_augmentations, root="./data/eventSym/training",
+                train_set = EventSym(repeat_augmentations, root=path+"/training/",
                                 nr_events_window=nr_events_window, events_representation=events_representation)
             elif dataset == "ncaltech12":
                 train_set = NCaltech(repeat_augmentations, root="./data/N-Caltech12/training",
@@ -574,14 +697,14 @@ class DataProvider():
         self.nr_train_epochs = int(train_set.nr_samples / data_size) + 1
         return train_loader, train_set
 
-    def get_test_loader(self, dataset, data_size, num_workers, nr_events_window, events_representation,
+    def get_test_loader(self, dataset,path, data_size, num_workers, nr_events_window, events_representation,
                         collate_fn=None):
         if dataset == "ncaltech256":
             test_set = NCaltech(repeat_augmentations=None, root="./data/N-Caltech256/testing",
                                 transform=None, augmentation=False, nr_events_window=nr_events_window,
                                 events_representation=events_representation)
         elif dataset == "eventSym":
-            test_set = EventSym(repeat_augmentations=None, root="./data/eventSym/testing",
+            test_set = EventSym(repeat_augmentations=None, root=path+"/testing/",
                                 transform=None, augmentation=False, nr_events_window=nr_events_window,
                                 events_representation=events_representation)
         elif dataset == "ncaltech12":

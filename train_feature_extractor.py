@@ -76,12 +76,14 @@ if settings.method_name == "classifier":
         train_transform = data_provider.get_train_transforms("classifier", settings.dataset_name)
 
     test_loader = data_provider.get_test_loader(dataset=settings.dataset_name,
+                                                path =settings.data_path,
                                                 data_size=settings.batch_size,
                                                 num_workers=settings.num_workers,
                                                 events_representation=event_mode,
                                                 collate_fn=collate_fn,
                                                 nr_events_window=settings.nr_events_window)
     train_loader, _ = data_provider.get_train_loader(dataset=settings.dataset_name,
+                                                     path=settings.data_path,
                                                      data_type=data_type,
                                                      data_size=settings.batch_size,
                                                      train_transform=train_transform,
@@ -94,6 +96,7 @@ elif settings.method_name == "simclr":
     model = SimCLR(feature_extractor)
     train_transform = data_provider.get_train_transforms(settings.method_name, settings.dataset_name)
     train_loader, _ = data_provider.get_train_loader(dataset=settings.dataset_name,
+                                                     path=settings.data_path,
                                                      data_type="simclr",
                                                      data_size=settings.batch_size,
                                                      train_transform=train_transform,

@@ -27,6 +27,7 @@ class Settings:
 
             # --- dataset ---
             dataset = settings['dataset']
+            self.data_path = dataset['path']
             self.dataset_name = dataset['name']
             self.events_representation = dataset['event_representation']
             self.nr_events_window = dataset['nr_events_window']
