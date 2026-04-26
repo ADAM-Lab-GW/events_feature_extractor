@@ -22,13 +22,11 @@ import random
 from pathlib import Path
 
 import numpy as np
-
+import argparse
 
 # ---------------------------
 # CONFIG
 # ---------------------------
-INPUT_ROOT = "./data/eventSym"   # <-- change this
-OUTPUT_ROOT = "./data/eventSym"  # <-- change this
 N_TEST_SAMPLES_PER_SUBCLASS = 10
 RANDOM_SEED = 8932857495889437
 
@@ -137,4 +135,9 @@ def convert_dataset(input_root: Path, output_root: Path) -> None:
 
 
 if __name__ == "__main__":
-    convert_dataset(Path(INPUT_ROOT), Path(OUTPUT_ROOT))
+    parser = argparse.ArgumentParser(description="Convert event dataset")
+    parser.add_argument("--input-root", help="Input root directory")
+    parser.add_argument("--output-root", help="Output root directory")
+    args = parser.parse_args()
+
+    convert_dataset(Path(args.input_root), Path(args.output_root))
