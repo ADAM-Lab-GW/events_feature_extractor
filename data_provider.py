@@ -97,7 +97,7 @@ def generate_event_histogram(events, shape):
     img_neg = np.zeros((H * W,), dtype="float32")
 
     np.add.at(img_pos, x[p == 1] + W * y[p == 1], 1)
-    np.add.at(img_neg, x[p == 0] + W * y[p == 0], 1)
+    np.add.at(img_neg, x[p == 0] + W * y[p == -1], 1)
 
     histogram = np.stack([img_neg, img_pos], -1).reshape((H, W, 2))
 
